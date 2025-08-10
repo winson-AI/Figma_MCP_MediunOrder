@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="156dp"
+    android:height="14dp"
+    android:viewportWidth="156"
+    android:viewportHeight="14">
+    <!-- Background track -->
+    <path
+        android:pathData="M0,6L156,6L156,8L0,8L0,6Z"
+        android:fillColor="#E0E0E0"/>
+    <!-- Active portion of track -->
+    <path
+        android:pathData="M0,6L128,6L128,8L0,8L0,6Z"
+        android:fillColor="#EF2A39"/>
+    <!-- Slider thumb -->
+    <path
+        android:pathData="M125,0C128.31,0 131,2.69 131,6C131,9.31 128.31,12 125,12C121.69,12 119,9.31 119,6C119,2.69 121.69,0 125,0Z"
+        android:fillColor="#EF2A39"/>
+</vector>
+
