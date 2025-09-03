@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.rememberScrollState
 import mediunorder.composeapp.generated.resources.Res
 import mediunorder.composeapp.generated.resources.ic_arrow_left
@@ -84,15 +86,18 @@ fun ProductScreen(modifier: Modifier = Modifier) {
 
         Spacer(Modifier.height(12.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+        Row(modifier = Modifier.fillMaxWidth().height(300.dp), verticalAlignment = Alignment.Top) {
             Image(
                 painter = painterResource(Res.drawable.img_hero_burger),
                 contentDescription = null,
-                modifier = Modifier.width(217.dp).height(297.dp),
+                modifier = Modifier
+                    .width(217.dp)
+                    .height(297.dp)
+                    .offset(x=(-46).dp),
                 contentScale = ContentScale.Crop
             )
-            Spacer(Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
+            Spacer(Modifier.width(2.dp))
+            Column(modifier = Modifier.weight(1f).offset(x=(-26).dp)) {
                 Text(
                     text = "Customize Your Burger to Your Tastes. Ultimate Experience",
                     fontSize = 16.sp,
@@ -121,14 +126,20 @@ fun ProductScreen(modifier: Modifier = Modifier) {
                 Text("Portion", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF3C2F2F))
                 Spacer(Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(Res.drawable.ic_minus_small),
-                        contentDescription = "Decrease",
+                    Box(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(RoundedCornerShape(10.dp))
-                            .clickable { if (portions > 1) portions -= 1 }
-                    )
+                            .background(Color(0xFFEF2A39))
+                            .clickable { portions += 1 },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(Res.drawable.ic_minus_small),
+                            contentDescription = "Decrease",
+                            modifier = Modifier.size(10.dp)
+                        )
+                    }
                     Spacer(Modifier.width(16.dp))
                     Text(portions.toString(), fontSize = 18.sp, color = Color(0xFF3C2F2F))
                     Spacer(Modifier.width(16.dp))
@@ -212,7 +223,7 @@ private fun ToppingsRow(
     items: List<Pair<DrawableResource, String>>,
     modifier: Modifier = Modifier
 ) {
-    val selectedStates = remember(items) { mutableStateListOf<Boolean>().apply { repeat(items.size) { add(false) } } }
+    val selectedStates = remember(items) { mutableStateListOf<Boolean>().apply { repeat(items.size) { add(true) } } }
     val scrollState = rememberScrollState()
     Row(
         horizontalArrangement = Arrangement.spacedBy(30.dp),
@@ -223,20 +234,27 @@ private fun ToppingsRow(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     modifier = Modifier
-                        .size(84.dp)
+                        .size(84.dp, 99.dp)
                         .shadow(6.dp, RoundedCornerShape(15.dp))
                         .clip(RoundedCornerShape(15.dp))
-                        .background(Color.White)
+                        .background(Color.Transparent)
                         .clickable { selectedStates[index] = !selected },
                     contentAlignment = Alignment.Center
                 ) {
-                    // faux brown back layer
                     Box(
                         modifier = Modifier
-                            .matchParentSize()
-                            .padding(top = 47.dp)
+                            .size(84.dp, 69.dp)
+                            .align(Alignment.BottomCenter)
                             .clip(RoundedCornerShape(15.dp))
                             .background(Color(0xFF3C2F2F))
+                    )
+                    // 2. 白色上层（后写，盖住棕色）
+                    Box(
+                        modifier = Modifier
+                            .size(84.dp, 61.dp)
+                            .align(Alignment.TopCenter)
+                            .clip(RoundedCornerShape(15.dp))
+                            .background(Color.White)
                     )
                     Image(
                         painter = painterResource(imageRes),
@@ -244,27 +262,35 @@ private fun ToppingsRow(
                         modifier = Modifier.size(60.dp),
                         contentScale = ContentScale.Fit
                     )
-                    if (selected) {
-                        Image(
-                            painter = painterResource(Res.drawable.ic_check_circle),
-                            contentDescription = null,
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)   // 再明确一次贴底（可选）
+                            .padding(horizontal = 2.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = label,
+                            fontSize = 12.sp,
+                            color = if (selected) Color.White else Color(0xFF3C2F2F),
                             modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(6.dp)
-                                .size(16.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(if (selected) Color(0xFF3C2F2F) else Color.Transparent)
+                                .padding(horizontal = 4.dp, vertical = 2.dp)
                         )
+
+                        Spacer(modifier = Modifier.weight(1f)) // 把剩余空间撑开
+
+                        if (selected) {
+                            Image(
+                                painter = painterResource(Res.drawable.ic_check_circle),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(16.dp)
+                            )
+                        }
                     }
                 }
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    label,
-                    fontSize = 12.sp,
-                    color = if (selected) Color.White else Color(0xFF3C2F2F),
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(if (selected) Color(0xFF3C2F2F) else Color.Transparent)
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
-                )
             }
         }
     }
